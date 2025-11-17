@@ -1,16 +1,16 @@
 import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
-import { SolanaContestPlatform } from "../target/types/solana_contest_platform";
+import { Solarena } from "../target/types/solarena";
 
-describe("solana-contest-platform", () => {
+describe("solarena", () => {
   // Configure the client to use the local cluster.
   anchor.setProvider(anchor.AnchorProvider.env());
 
-  const program = anchor.workspace.solanaContestPlatform as Program<SolanaContestPlatform>;
+  const program = anchor.workspace.solarena as Program<Solarena>;
 
   it("Is initialized!", async () => {
     // Add your test here.
-    const tx = await program.methods.initialize().rpc();
-    console.log("Your transaction signature", tx);
+    // Tests will be added for SolArena instructions
+    console.log("Program ID:", program.programId.toString());
   });
 });

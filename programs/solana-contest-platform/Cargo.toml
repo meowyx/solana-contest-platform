@@ -1,12 +1,12 @@
 [package]
-name = "solana-contest-platform"
+name = "solarena"
 version = "0.1.0"
-description = "Created with Anchor"
+description = "SolArena: Gas-free contest platform on Solana with SOL prizes"
 edition = "2021"
 
 [lib]
 crate-type = ["cdylib", "lib"]
-name = "solana_contest_platform"
+name = "solarena"
 
 [features]
 default = []
@@ -14,7 +14,7 @@ cpi = ["no-entrypoint"]
 no-entrypoint = []
 no-idl = []
 no-log-ix-name = []
-idl-build = ["anchor-lang/idl-build"]
+idl-build = ["anchor-lang/idl-build", "anchor-spl/idl-build"]
 anchor-debug = []
 custom-heap = []
 custom-panic = []
@@ -22,6 +22,7 @@ custom-panic = []
 
 [dependencies]
 anchor-lang = "0.32.1"
+anchor-spl = "0.32.1"
 
 
 [lints.rust]
