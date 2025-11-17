@@ -4,7 +4,19 @@
 
 [![Anchor Version](https://img.shields.io/badge/Anchor-0.32.1-blue)](https://www.anchor-lang.com/)
 [![Solana](https://img.shields.io/badge/Solana-Program-green)](https://solana.com/)
+[![Deployed](https://img.shields.io/badge/Deployed-Devnet-orange)](https://explorer.solana.com/address/9VcxDiDi8kbP6UnaVocXDcSPDwoJiDMxmECdqyALGuA4?cluster=devnet)
 
+## 🚀 Live Deployment
+
+**Network:** Solana Devnet
+**Program ID:** `9VcxDiDi8kbP6UnaVocXDcSPDwoJiDMxmECdqyALGuA4`
+**Explorer:** [View on Solana Explorer](https://explorer.solana.com/address/9VcxDiDi8kbP6UnaVocXDcSPDwoJiDMxmECdqyALGuA4?cluster=devnet)
+**Frontend:** Next.js 16 with App Router (Neobrutalist Design)
+
+### Quick Access
+- **RPC Endpoint:** `https://api.devnet.solana.com`
+- **Program IDL:** Available in `target/idl/solarena.json`
+- **Frontend App:** Located in `/app` directory
 
 ## Overview
 
