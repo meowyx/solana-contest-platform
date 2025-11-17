@@ -440,15 +440,7 @@ Contributions are welcome! Please follow these steps:
 5. Open a Pull Request
 
 
-## What Makes SolArena Special
 
-✅ **Simplified** - No oracle complexity, direct SOL prizes
-✅ **Gas-Free Participation** - Optional sponsorship removes barriers
-✅ **Trustless** - Smart contract escrow, no manual distribution
-✅ **Transparent** - All votes and submissions on-chain
-✅ **Flexible** - Configurable judges and thresholds
-✅ **Clean Code** - Well-documented with Anchor best practices
-✅ **Production Ready** - Comprehensive error handling and security checks
 
 
 
