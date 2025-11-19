@@ -68,7 +68,7 @@ export default function ContestsPage() {
       <nav className="border-b-4 border-black bg-[#8bd3dd]">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link href="/" className="text-3xl font-black text-[#001858] hover:text-[#f582ae] transition-colors">
+            <Link href="/" className="text-xl md:text-3xl font-black text-[#001858] hover:text-[#f582ae] transition-colors">
               🏆 SOLARENA
             </Link>
             <WalletButton />
@@ -76,19 +76,19 @@ export default function ContestsPage() {
         </div>
       </nav>
 
-      <main className="container mx-auto px-4 py-12">
-        <div className="mb-8 flex justify-between items-center">
+      <main className="container mx-auto px-4 py-8 md:py-12">
+        <div className="mb-8 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
           <div>
-            <h1 className="text-5xl font-black text-[#001858] mb-2 uppercase">
+            <h1 className="text-3xl md:text-5xl font-black text-[#001858] mb-2 uppercase">
               All Contests
             </h1>
-            <p className="text-[#001858] font-bold">
+            <p className="text-[#001858] font-bold text-sm md:text-base">
               Browse and participate in active contests
             </p>
           </div>
           <Link
             href="/contests/create"
-            className="btn-neo bg-[#f582ae] text-[#001858]"
+            className="btn-neo bg-[#f582ae] text-[#001858] text-center"
           >
             Create Contest
           </Link>
@@ -122,8 +122,13 @@ export default function ContestsPage() {
                   idx % 3 === 0 ? 'rotate-[1deg]' : idx % 3 === 1 ? 'rotate-[-1deg]' : 'rotate-[2deg]'
                 }`}
               >
-                <div className="mb-4">
+                <div className="mb-4 flex flex-wrap gap-2">
                   {getStatusBadge(contest.account.status)}
+                  {contest.account.gasSponsorshipEnabled && (
+                    <span className="px-3 py-1.5 text-xs font-black uppercase border-3 border-black neo-brutalism-shadow bg-[#06ffa5] text-[#001858]">
+                      ⛽ FREE GAS
+                    </span>
+                  )}
                 </div>
                 <h3 className="text-2xl font-black text-[#001858] mb-2 uppercase">
                   {contest.account.title}

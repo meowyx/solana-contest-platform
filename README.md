@@ -22,24 +22,6 @@
 
 SolArena is a decentralized contest and bounty platform that enables organizations to launch competitions with built-in escrow, multisig judging, and optional transaction fee sponsorship. Participants can submit entries without needing SOL for gas fees, removing barriers to entry.
 
-## Quick Start
-
-```bash
-# Install dependencies
-yarn install
-
-# Build the program
-anchor build
-
-# Run tests
-anchor test
-
-# Deploy to localnet
-anchor deploy
-
-# Deploy to devnet
-anchor deploy --provider.cluster devnet
-```
 
 ## Core Features
 
@@ -96,71 +78,7 @@ anchor deploy --provider.cluster devnet
 └─────────────┘
 ```
 
-### Phase 1: Contest Creation
-```javascript
-await program.methods
-  .createContest(
-    contestId,
-    "My Hackathon",
-    "Build the best DeFi app",
-    new BN(1_000_000_000), // 1 SOL prize
-    deadline,
-    [judge1, judge2, judge3],
-    2 // 2-of-3 approval
-  )
-  .accounts({ /* ... */ })
-  .rpc();
-```
 
-### Phase 2: Funding
-```javascript
-await program.methods
-  .fundContest()
-  .accounts({ /* ... */ })
-  .rpc();
-
-// Optional: Enable gas sponsorship
-await program.methods
-  .enableGasSponsorship(new BN(100_000_000)) // 0.1 SOL for gas
-  .accounts({ /* ... */ })
-  .rpc();
-```
-
-### Phase 3: Submissions
-```javascript
-await program.methods
-  .submitEntry("https://github.com/user/project")
-  .accounts({ /* ... */ })
-  .rpc();
-
-// Update before deadline
-await program.methods
-  .updateSubmission("https://github.com/user/updated-project")
-  .accounts({ /* ... */ })
-  .rpc();
-```
-
-### Phase 4: Judging
-```javascript
-// Each judge votes independently
-await program.methods
-  .judgeVote(winnerPublicKey)
-  .accounts({ /* ... */ })
-  .rpc();
-```
-
-### Phase 5: Prize Distribution
-```javascript
-await program.methods
-  .distributePrizes()
-  .accounts({ /* ... */ })
-  .remainingAccounts([
-    { pubkey: vote1, isSigner: false, isWritable: false },
-    { pubkey: vote2, isSigner: false, isWritable: false },
-    // ... all judge vote PDAs
-  ])
-  .rpc();
-```
 
 ## Technical Architecture
 
@@ -245,12 +163,12 @@ Setup ──fund_contest()──> Active ──distribute_prizes()──> Comple
 
 ## Security Features
 
-- ✅ **Authorization**: `has_one` constraints + runtime checks
-- ✅ **PDA Security**: Only program can sign with PDAs
-- ✅ **Time Locks**: Deadline enforcement, 30-day reclaim period
-- ✅ **Integer Safety**: Saturating arithmetic for counters
-- ✅ **Input Validation**: String length, URL format, parameter ranges
-- ✅ **State Validation**: Proper state transition checks
+-  **Authorization**: `has_one` constraints + runtime checks
+-  **PDA Security**: Only program can sign with PDAs
+-  **Time Locks**: Deadline enforcement, 30-day reclaim period
+-  **Integer Safety**: Saturating arithmetic for counters
+-  **Input Validation**: String length, URL format, parameter ranges
+-  **State Validation**: Proper state transition checks
 
 ## Use Cases
 
@@ -266,48 +184,37 @@ Setup ──fund_contest()──> Active ──distribute_prizes()──> Comple
 
 ```
 solana-contest-platform/
-├── programs/
-│   └── solana-contest-platform/
-│       ├── src/
-│       │   ├── lib.rs                          # Program entry point
-│       │   ├── errors.rs                       # Error codes
-│       │   ├── state/                          # Account structures
-│       │   │   ├── mod.rs
-│       │   │   ├── contest.rs                  # Contest account + status enum
-│       │   │   ├── submission.rs               # Submission account
-│       │   │   └── vote.rs                     # Judge vote account
-│       │   └── instructions/                   # Instruction handlers
-│       │       ├── mod.rs
-│       │       ├── create_contest.rs           # Create new contest
-│       │       ├── fund_contest.rs             # Fund escrow
-│       │       ├── enable_gas_sponsorship.rs   # Enable gas subsidy
-│       │       ├── submit_entry.rs             # Submit entry
-│       │       ├── update_submission.rs        # Update entry
-│       │       ├── judge_vote.rs               # Judge votes
-│       │       ├── distribute_prizes.rs        # Distribute winnings
-│       │       └── reclaim_funds.rs            # Reclaim expired funds
-│       └── Cargo.toml
-├── tests/
-│   └── solana-contest-platform.ts              # Integration tests
-├── migrations/
-│   └── deploy.ts                                # Deployment script
-├── target/
-│   └── deploy/
-│       ├── solarena.so                          # Compiled program
-│       └── solarena-keypair.json                # Program keypair
-├── Anchor.toml                                  # Anchor configuration
-├── Cargo.toml                                   # Workspace configuration
-├── package.json                                 # Node dependencies
-└── README.md                                    # This file
+├── app/                        # Frontend (Next.js 16 + App Router)
+│   ├── app/
+│   │   ├── components/         # UI components (Nav, WalletButton)
+│   │   ├── contests/           # Contest pages (list, create, details)
+│   │   ├── lib/                # Program client, types, IDL
+│   │   └── providers/          # Solana wallet provider
+│   └── public/                 # Static assets
+│
+├── programs/solana-contest-platform/src/
+│   ├── lib.rs                  # Program entry point
+│   ├── errors.rs               # Custom error codes
+│   ├── state/
+│   │   ├── contest.rs          # Contest account + status enum
+│   │   ├── submission.rs       # Submission account
+│   │   └── vote.rs             # Judge vote account
+│   └── instructions/
+│       ├── create_contest.rs   # Initialize new contest
+│       ├── fund_contest.rs     # Fund escrow + activate
+│       ├── enable_gas_sponsorship.rs  # Enable fee sponsorship
+│       ├── submit_entry.rs     # Submit entry URL
+│       ├── update_submission.rs # Update entry before deadline
+│       ├── judge_vote.rs       # Judge votes for winner
+│       ├── distribute_prizes.rs # Distribute when consensus reached
+│       └── reclaim_funds.rs    # Reclaim expired funds
+│
+├── tests/                      # Integration tests
+├── migrations/                 # Deployment scripts
+└── target/deploy/              # Compiled program + keypair
 ```
 
-### Modular Architecture Benefits
 
-- **Clean Separation**: State, instructions, and errors are in separate modules
-- **Easy Navigation**: Find any functionality quickly
-- **Maintainable**: Change one instruction without affecting others
-- **Testable**: Each module can be tested independently
-- **Scalable**: Add new instructions or accounts easily
 
 ## Development
 
@@ -342,104 +249,6 @@ anchor build
 anchor test
 ```
 
-### Deploying
-
-**Localnet:**
-```bash
-# Start local validator
-solana-test-validator
-
-# Deploy
-anchor deploy
-```
-
-**Devnet:**
-```bash
-# Update Anchor.toml cluster to devnet
-anchor deploy --provider.cluster devnet
-```
-
-**Mainnet:**
-```bash
-# Update Anchor.toml cluster to mainnet
-anchor deploy --provider.cluster mainnet
-```
-
-## Configuration
-
-Key parameters in the program:
-
-- **Max Judges**: 5
-- **Max Title Length**: 100 characters
-- **Max Description**: 500 characters
-- **Max Submission URL**: 200 characters
-- **Minimum Prize**: 0.01 SOL (10,000,000 lamports)
-- **Reclaim Period**: 30 days after deadline
-
-## Testing
-
-Run the test suite:
-
-```bash
-# Run all tests
-anchor test
-
-# Run specific test file
-anchor test --skip-local-validator
-```
-
-## Error Codes
-
-| Code | Error | Description |
-|------|-------|-------------|
-| 6000 | `TitleTooLong` | Title exceeds 100 characters |
-| 6001 | `DescriptionTooLong` | Description exceeds 500 characters |
-| 6002 | `TooManyJudges` | More than 5 judges specified |
-| 6003 | `NoJudges` | No judges specified |
-| 6004 | `InvalidThreshold` | Approval threshold exceeds judge count |
-| 6005 | `PrizeTooLow` | Prize below minimum (0.01 SOL) |
-| 6006 | `InvalidDeadline` | Deadline is not in the future |
-| 6007 | `InvalidContestState` | Operation not allowed in current state |
-| 6008 | `AlreadyFunded` | Contest already funded |
-| 6009 | `UrlTooLong` | URL exceeds 200 characters |
-| 6010 | `InvalidUrl` | URL must start with https:// |
-| 6011 | `SubmissionDeadlinePassed` | Cannot submit after deadline |
-| 6012 | `UnauthorizedParticipant` | Not the original submitter |
-| 6013 | `UnauthorizedCreator` | Not the contest creator |
-| 6014 | `UnauthorizedJudge` | Not an authorized judge |
-| 6015 | `SubmissionPeriodNotEnded` | Cannot judge before deadline |
-| 6016 | `ContestNotFunded` | Contest not funded |
-| 6017 | `ConsensusNotReached` | Insufficient votes for winner |
-| 6018 | `ContestAlreadyCompleted` | Contest already completed |
-| 6019 | `ReclaimPeriodNotReached` | Must wait 30 days after deadline |
-
-## Technical Stack
-
-- **Framework**: Anchor 0.32.1
-- **Language**: Rust
-- **Platform**: Solana
-- **Dependencies**:
-  - anchor-lang 0.32.1
-  - anchor-spl 0.32.1
-  - solana-program 2.3.0
-
-## Project Statistics
-
-- **Instructions**: 8
-- **Account Types**: 3 (Contest, Submission, JudgeVoteAccount)
-- **PDA Types**: 5
-- **Lines of Code**: ~870
-- **Compiled Size**: ~367 KB
-
-## Roadmap
-
-- [ ] SPL Token support for prizes
-- [ ] Multiple prize tiers (1st, 2nd, 3rd place)
-- [ ] NFT prizes
-- [ ] Submission metadata (images, descriptions)
-- [ ] On-chain reputation system for judges
-- [ ] Contest templates
-- [ ] Frontend application
 
 ## Contributing
 

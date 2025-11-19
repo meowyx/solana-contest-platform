@@ -7,7 +7,7 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { AnchorProvider, Wallet, BN } from '@coral-xyz/anchor';
 import { LAMPORTS_PER_SOL, PublicKey, SystemProgram } from '@solana/web3.js';
 import { WalletButton } from '../../components/WalletButton';
-import { getProgram, getEscrowPDA, getSubmissionPDA, getVotePDA } from '../../lib/program';
+import { getProgram, getEscrowPDA, getSubmissionPDA, getVotePDA, getGasPoolPDA } from '../../lib/program';
 
 export default function ContestDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
@@ -24,6 +24,7 @@ export default function ContestDetailPage({ params }: { params: Promise<{ id: st
   const [submissionUrl, setSubmissionUrl] = useState('');
   const [selectedWinner, setSelectedWinner] = useState('');
   const [fundingAmount, setFundingAmount] = useState('');
+  const [gasBudget, setGasBudget] = useState('');
 
   useEffect(() => {
     fetchContestData();
@@ -257,6 +258,47 @@ export default function ContestDetailPage({ params }: { params: Promise<{ id: st
     }
   };
 
+  const handleEnableGasSponsorship = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!wallet.publicKey || !wallet.signTransaction || !contest) return;
+
+    setActionLoading(true);
+    setError('');
+
+    try {
+      const provider = new AnchorProvider(
+        connection,
+        wallet as any,
+        AnchorProvider.defaultOptions()
+      );
+      const program = getProgram(provider);
+
+      const [gasPoolPDA] = getGasPoolPDA(contest.publicKey);
+
+      // Convert SOL to lamports
+      const gasInLamports = new BN(parseFloat(gasBudget) * LAMPORTS_PER_SOL);
+
+      const tx = await program.methods
+        .enableGasSponsorship(gasInLamports)
+        .accounts({
+          contest: contest.publicKey,
+          gasPool: gasPoolPDA,
+          creator: wallet.publicKey,
+          systemProgram: SystemProgram.programId,
+        })
+        .rpc();
+
+      console.log('Gas sponsorship enabled:', tx);
+      setGasBudget('');
+      await fetchContestData();
+    } catch (err: any) {
+      console.error('Error enabling gas sponsorship:', err);
+      setError(err.message || 'Failed to enable gas sponsorship');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#fef6e4] flex items-center justify-center">
@@ -292,7 +334,7 @@ export default function ContestDetailPage({ params }: { params: Promise<{ id: st
       <nav className="border-b-4 border-black bg-[#8bd3dd]">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link href="/" className="text-3xl font-black text-[#001858] hover:text-[#f582ae] transition-colors">
+            <Link href="/" className="text-xl md:text-3xl font-black text-[#001858] hover:text-[#f582ae] transition-colors">
               🏆 SOLARENA
             </Link>
             <WalletButton />
@@ -300,7 +342,7 @@ export default function ContestDetailPage({ params }: { params: Promise<{ id: st
         </div>
       </nav>
 
-      <main className="container mx-auto px-4 py-12">
+      <main className="container mx-auto px-4 py-8 md:py-12">
         <div className="mb-8">
           <Link href="/contests" className="text-[#001858] font-black hover:text-[#f582ae] transition-colors text-lg">
             ← BACK TO CONTESTS
@@ -315,14 +357,14 @@ export default function ContestDetailPage({ params }: { params: Promise<{ id: st
 
         {/* Contest Details */}
         <div className="card-neo bg-[#f582ae] mb-8">
-          <div className="flex justify-between items-start mb-6 flex-wrap gap-4">
-            <div className="flex-1">
-              <h1 className="text-4xl md:text-5xl font-black text-[#001858] mb-2 uppercase">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-6 gap-4">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-[#001858] mb-2 uppercase break-words">
                 {contest.account.title}
               </h1>
-              <p className="text-[#001858] font-bold">{contest.account.description}</p>
+              <p className="text-[#001858] font-bold text-sm md:text-base">{contest.account.description}</p>
             </div>
-            <span className={`px-4 py-2 text-sm font-black uppercase border-4 border-black neo-brutalism-shadow ${
+            <span className={`px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-black uppercase border-4 border-black neo-brutalism-shadow shrink-0 ${
               statusKey === 'active' ? 'bg-[#06ffa5] text-[#001858]' :
               statusKey === 'setup' ? 'bg-[#ffbe0b] text-[#001858]' :
               statusKey === 'completed' ? 'bg-[#8bd3dd] text-[#001858]' :
@@ -332,28 +374,28 @@ export default function ContestDetailPage({ params }: { params: Promise<{ id: st
             </span>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-white border-4 border-black p-4 neo-brutalism-shadow">
-              <p className="text-[#001858] text-sm mb-1 font-bold uppercase">Prize Amount</p>
-              <p className="text-3xl font-black text-[#001858]">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
+            <div className="bg-white border-4 border-black p-3 md:p-4 neo-brutalism-shadow">
+              <p className="text-[#001858] text-xs md:text-sm mb-1 font-bold uppercase">Prize Amount</p>
+              <p className="text-xl md:text-3xl font-black text-[#001858]">
                 {(contest.account.prizeAmount.toNumber() / LAMPORTS_PER_SOL).toFixed(2)} SOL
               </p>
             </div>
-            <div className="bg-white border-4 border-black p-4 neo-brutalism-shadow">
-              <p className="text-[#001858] text-sm mb-1 font-bold uppercase">Submissions</p>
-              <p className="text-3xl font-black text-[#001858]">
+            <div className="bg-white border-4 border-black p-3 md:p-4 neo-brutalism-shadow">
+              <p className="text-[#001858] text-xs md:text-sm mb-1 font-bold uppercase">Submissions</p>
+              <p className="text-xl md:text-3xl font-black text-[#001858]">
                 {contest.account.submissionCount}
               </p>
             </div>
-            <div className="bg-white border-4 border-black p-4 neo-brutalism-shadow">
-              <p className="text-[#001858] text-sm mb-1 font-bold uppercase">Deadline</p>
-              <p className="text-lg font-black text-[#001858]">
+            <div className="bg-white border-4 border-black p-3 md:p-4 neo-brutalism-shadow">
+              <p className="text-[#001858] text-xs md:text-sm mb-1 font-bold uppercase">Deadline</p>
+              <p className="text-sm md:text-lg font-black text-[#001858]">
                 {deadline.toLocaleDateString()}
               </p>
             </div>
-            <div className="bg-white border-4 border-black p-4 neo-brutalism-shadow">
-              <p className="text-[#001858] text-sm mb-1 font-bold uppercase">Judges</p>
-              <p className="text-lg font-black text-[#001858]">
+            <div className="bg-white border-4 border-black p-3 md:p-4 neo-brutalism-shadow">
+              <p className="text-[#001858] text-xs md:text-sm mb-1 font-bold uppercase">Judges</p>
+              <p className="text-sm md:text-lg font-black text-[#001858]">
                 {contest.account.judges.length} ({contest.account.approvalThreshold} needed)
               </p>
             </div>
@@ -370,6 +412,49 @@ export default function ContestDetailPage({ params }: { params: Promise<{ id: st
               >
                 {actionLoading ? 'Funding...' : `Fund Contest (${(contest.account.prizeAmount.toNumber() / LAMPORTS_PER_SOL).toFixed(2)} SOL)`}
               </button>
+            </div>
+          )}
+
+          {/* Gas Sponsorship Status */}
+          {contest.account.gasSponsorshipEnabled && (
+            <div className="mt-6 flex items-center gap-2">
+              <span className="px-3 py-1.5 text-xs font-black uppercase border-3 border-black neo-brutalism-shadow bg-[#06ffa5] text-[#001858]">
+                ⛽ GAS SPONSORED
+              </span>
+              <span className="text-[#001858] font-bold text-sm">
+                Participants' transaction fees are covered
+              </span>
+            </div>
+          )}
+
+          {/* Enable Gas Sponsorship (Creator only, when active and not yet enabled) */}
+          {isCreator && statusKey === 'active' && !contest.account.gasSponsorshipEnabled && (
+            <div className="mt-6 card-neo bg-[#8bd3dd]">
+              <h3 className="text-xl font-black text-[#001858] mb-3 uppercase">⛽ Enable Gas Sponsorship</h3>
+              <p className="text-[#001858] font-bold text-sm mb-4">
+                Sponsor transaction fees for participants to enable barrier-free entry
+              </p>
+              <form onSubmit={handleEnableGasSponsorship} className="flex flex-col sm:flex-row gap-3">
+                <div className="flex-1">
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0.01"
+                    value={gasBudget}
+                    onChange={(e) => setGasBudget(e.target.value)}
+                    className="input-neo w-full bg-white text-[#001858] placeholder-gray-500"
+                    placeholder="Gas budget in SOL (e.g., 0.5)"
+                    required
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={actionLoading || !gasBudget}
+                  className="btn-neo bg-[#06ffa5] text-[#001858] whitespace-nowrap"
+                >
+                  {actionLoading ? 'ENABLING...' : 'ENABLE'}
+                </button>
+              </form>
             </div>
           )}
         </div>
@@ -440,17 +525,17 @@ export default function ContestDetailPage({ params }: { params: Promise<{ id: st
 
           {/* Distribute Prizes */}
           {!isBeforeDeadline && statusKey === 'active' && votes.length >= contest.account.approvalThreshold && (
-            <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-purple-500/20">
-              <h2 className="text-2xl font-bold text-white mb-4">Distribute Prizes</h2>
-              <p className="text-gray-400 mb-4">
+            <div className="card-neo bg-[#ffbe0b]">
+              <h2 className="text-2xl font-black text-[#001858] mb-4 uppercase">🏆 Distribute Prizes</h2>
+              <p className="text-[#001858] font-bold mb-4">
                 Consensus reached! Click to distribute prizes to the winner.
               </p>
               <button
                 onClick={handleDistributePrizes}
                 disabled={actionLoading}
-                className="w-full py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 text-white font-semibold rounded-lg transition-colors"
+                className="btn-neo w-full bg-[#06ffa5] text-[#001858]"
               >
-                {actionLoading ? 'Distributing...' : 'Distribute Prizes'}
+                {actionLoading ? 'DISTRIBUTING...' : 'DISTRIBUTE PRIZES'}
               </button>
             </div>
           )}
@@ -458,37 +543,37 @@ export default function ContestDetailPage({ params }: { params: Promise<{ id: st
 
         {/* Submissions List */}
         {submissions.length > 0 && (
-          <div className="mt-8 bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-purple-500/20">
-            <h2 className="text-2xl font-bold text-white mb-4">
+          <div className="mt-8 card-neo bg-[#f3d2c1]">
+            <h2 className="text-2xl font-black text-[#001858] mb-4 uppercase">
               Submissions ({submissions.length})
             </h2>
             <div className="space-y-4">
               {submissions.map((sub) => (
                 <div
                   key={sub.publicKey.toString()}
-                  className="p-4 bg-white/5 rounded-lg border border-purple-500/10"
+                  className="p-4 bg-white border-4 border-black neo-brutalism-shadow"
                 >
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <p className="text-white font-semibold mb-1">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[#001858] font-black mb-1 truncate">
                         {sub.account.participant.toString().slice(0, 16)}...
                       </p>
                       <a
                         href={sub.account.submissionUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-purple-400 hover:text-purple-300 break-all"
+                        className="text-[#f582ae] hover:text-[#001858] break-all font-bold"
                       >
                         {sub.account.submissionUrl}
                       </a>
-                      <p className="text-gray-400 text-sm mt-2">
+                      <p className="text-[#001858] text-sm mt-2 font-bold">
                         Submitted: {new Date(sub.account.submittedAt.toNumber() * 1000).toLocaleString()}
                       </p>
                     </div>
-                    <div className="text-right ml-4">
+                    <div className="text-right sm:ml-4">
                       {votes.filter((v) => v.account.winner.equals(sub.account.participant)).length > 0 && (
-                        <span className="text-green-400 text-sm">
-                          {votes.filter((v) => v.account.winner.equals(sub.account.participant)).length} vote(s)
+                        <span className="text-[#06ffa5] text-sm font-black bg-[#001858] px-2 py-1 border-2 border-black">
+                          {votes.filter((v) => v.account.winner.equals(sub.account.participant)).length} VOTE(S)
                         </span>
                       )}
                     </div>
@@ -501,20 +586,20 @@ export default function ContestDetailPage({ params }: { params: Promise<{ id: st
 
         {/* Votes List */}
         {votes.length > 0 && isJudge && (
-          <div className="mt-8 bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-purple-500/20">
-            <h2 className="text-2xl font-bold text-white mb-4">
+          <div className="mt-8 card-neo bg-[#8bd3dd]">
+            <h2 className="text-2xl font-black text-[#001858] mb-4 uppercase">
               Judge Votes ({votes.length})
             </h2>
             <div className="space-y-2">
               {votes.map((vote) => (
                 <div
                   key={vote.publicKey.toString()}
-                  className="p-3 bg-white/5 rounded-lg border border-purple-500/10 flex justify-between"
+                  className="p-3 bg-white border-3 border-black neo-brutalism-shadow flex flex-col sm:flex-row sm:justify-between gap-2"
                 >
-                  <span className="text-gray-400">
+                  <span className="text-[#001858] font-bold truncate">
                     Judge: {vote.account.judge.toString().slice(0, 16)}...
                   </span>
-                  <span className="text-white">
+                  <span className="text-[#001858] font-black truncate">
                     Winner: {vote.account.winner.toString().slice(0, 16)}...
                   </span>
                 </div>
