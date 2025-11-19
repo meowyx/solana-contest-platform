@@ -43,13 +43,21 @@ body {
 
 /* Button Styles */
 .btn-neo {
-  padding: 0.75rem 1.5rem;
+  padding: 0.6rem 1rem;
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  border: 4px solid black;
+  border: 3px solid black;
   transition: all 0.2s;
-  box-shadow: 4px 4px 0px 0px #001858;
+  box-shadow: 3px 3px 0px 0px #001858;
+}
+
+@media (min-width: 640px) {
+  .btn-neo {
+    padding: 0.75rem 1.5rem;
+    border: 4px solid black;
+    box-shadow: 4px 4px 0px 0px #001858;
+  }
 }
 
 .btn-neo:hover:not(:disabled) {
@@ -70,10 +78,18 @@ body {
 /* Card Styles */
 .card-neo {
   background: white;
-  border: 4px solid black;
-  padding: 1.5rem;
+  border: 3px solid black;
+  padding: 1rem;
   border-radius: 0;
-  box-shadow: 8px 8px 0px 0px #001858;
+  box-shadow: 4px 4px 0px 0px #001858;
+}
+
+@media (min-width: 640px) {
+  .card-neo {
+    border: 4px solid black;
+    padding: 1.5rem;
+    box-shadow: 8px 8px 0px 0px #001858;
+  }
 }
 
 /* Input Styles */
@@ -93,10 +109,21 @@ body {
 .wallet-adapter-button {
   font-weight: 900 !important;
   text-transform: uppercase !important;
-  border: 4px solid black !important;
+  border: 3px solid black !important;
   border-radius: 0 !important;
   background: #f582ae !important;
-  box-shadow: 4px 4px 0px 0px #001858 !important;
+  box-shadow: 3px 3px 0px 0px #001858 !important;
+  font-size: 0.75rem !important;
+  padding: 0.5rem 0.75rem !important;
+}
+
+@media (min-width: 640px) {
+  .wallet-adapter-button {
+    border: 4px solid black !important;
+    box-shadow: 4px 4px 0px 0px #001858 !important;
+    font-size: 0.875rem !important;
+    padding: 0.75rem 1rem !important;
+  }
 }
 
 .wallet-adapter-button:hover:not(:disabled) {

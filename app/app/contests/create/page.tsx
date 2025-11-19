@@ -126,46 +126,46 @@ export default function CreateContest() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-black">
+    <div className="min-h-screen bg-[#fef6e4]">
       {/* Navigation */}
-      <nav className="border-b border-purple-700/30 bg-black/20 backdrop-blur-sm">
+      <nav className="border-b-4 border-black bg-[#8bd3dd]">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link href="/" className="text-2xl font-bold text-white">
-              🏆 SolArena
+            <Link href="/" className="text-2xl md:text-3xl font-black text-[#001858] hover:text-[#f582ae] transition-colors">
+              🏆 SOLARENA
             </Link>
             <WalletButton />
           </div>
         </div>
       </nav>
 
-      <main className="container mx-auto px-4 py-12">
+      <main className="container mx-auto px-4 py-8 md:py-12">
         <div className="max-w-2xl mx-auto">
           <div className="mb-8">
             <Link
               href="/"
-              className="text-purple-400 hover:text-purple-300 transition-colors"
+              className="text-[#001858] font-black hover:text-[#f582ae] transition-colors text-lg"
             >
-              ← Back to Home
+              ← BACK TO HOME
             </Link>
           </div>
 
-          <div className="bg-white/5 backdrop-blur-sm rounded-xl p-8 border border-purple-500/20">
-            <h1 className="text-3xl font-bold text-white mb-6">
+          <div className="card-neo bg-[#f3d2c1]">
+            <h1 className="text-3xl md:text-4xl font-black text-[#001858] mb-6 uppercase">
               Create a Contest
             </h1>
 
             {error && (
-              <div className="mb-6 p-4 bg-red-500/20 border border-red-500/50 rounded-lg text-red-200">
-                {error}
+              <div className="mb-6 card-neo bg-[#f582ae]">
+                <p className="text-[#001858] font-bold">{error}</p>
               </div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Title */}
               <div>
-                <label className="block text-white font-semibold mb-2">
-                  Title <span className="text-red-400">*</span>
+                <label className="block text-[#001858] font-black mb-2 uppercase text-sm">
+                  Title <span className="text-[#f582ae]">*</span>
                 </label>
                 <input
                   type="text"
@@ -173,40 +173,40 @@ export default function CreateContest() {
                   onChange={(e) =>
                     setFormData({ ...formData, title: e.target.value })
                   }
-                  className="w-full px-4 py-2 bg-white/10 border border-purple-500/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+                  className="input-neo w-full bg-white text-[#001858] placeholder-gray-500"
                   placeholder="My Awesome Hackathon"
                   maxLength={100}
                   required
                 />
-                <p className="text-sm text-gray-400 mt-1">
+                <p className="text-sm text-[#001858] mt-1 font-bold">
                   Max 100 characters
                 </p>
               </div>
 
               {/* Description */}
               <div>
-                <label className="block text-white font-semibold mb-2">
-                  Description <span className="text-red-400">*</span>
+                <label className="block text-[#001858] font-black mb-2 uppercase text-sm">
+                  Description <span className="text-[#f582ae]">*</span>
                 </label>
                 <textarea
                   value={formData.description}
                   onChange={(e) =>
                     setFormData({ ...formData, description: e.target.value })
                   }
-                  className="w-full px-4 py-2 bg-white/10 border border-purple-500/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 h-32"
+                  className="input-neo w-full bg-white text-[#001858] placeholder-gray-500 h-32 resize-none"
                   placeholder="Build the best DeFi app on Solana..."
                   maxLength={500}
                   required
                 />
-                <p className="text-sm text-gray-400 mt-1">
+                <p className="text-sm text-[#001858] mt-1 font-bold">
                   Max 500 characters
                 </p>
               </div>
 
               {/* Prize Amount */}
               <div>
-                <label className="block text-white font-semibold mb-2">
-                  Prize Amount (SOL) <span className="text-red-400">*</span>
+                <label className="block text-[#001858] font-black mb-2 uppercase text-sm">
+                  Prize Amount (SOL) <span className="text-[#f582ae]">*</span>
                 </label>
                 <input
                   type="number"
@@ -216,19 +216,19 @@ export default function CreateContest() {
                   onChange={(e) =>
                     setFormData({ ...formData, prizeAmount: e.target.value })
                   }
-                  className="w-full px-4 py-2 bg-white/10 border border-purple-500/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+                  className="input-neo w-full bg-white text-[#001858] placeholder-gray-500"
                   placeholder="1.0"
                   required
                 />
-                <p className="text-sm text-gray-400 mt-1">
+                <p className="text-sm text-[#001858] mt-1 font-bold">
                   Minimum: 0.01 SOL
                 </p>
               </div>
 
               {/* Deadline */}
               <div>
-                <label className="block text-white font-semibold mb-2">
-                  Submission Deadline <span className="text-red-400">*</span>
+                <label className="block text-[#001858] font-black mb-2 uppercase text-sm">
+                  Submission Deadline <span className="text-[#f582ae]">*</span>
                 </label>
                 <input
                   type="datetime-local"
@@ -236,32 +236,32 @@ export default function CreateContest() {
                   onChange={(e) =>
                     setFormData({ ...formData, deadline: e.target.value })
                   }
-                  className="w-full px-4 py-2 bg-white/10 border border-purple-500/30 rounded-lg text-white focus:outline-none focus:border-purple-500"
+                  className="input-neo w-full bg-white text-[#001858]"
                   required
                 />
               </div>
 
               {/* Judges */}
               <div>
-                <label className="block text-white font-semibold mb-2">
-                  Judges <span className="text-red-400">*</span>
+                <label className="block text-[#001858] font-black mb-2 uppercase text-sm">
+                  Judges <span className="text-[#f582ae]">*</span>
                 </label>
                 {formData.judges.map((judge, index) => (
-                  <div key={index} className="flex gap-2 mb-2">
+                  <div key={index} className="flex flex-col sm:flex-row gap-2 mb-2">
                     <input
                       type="text"
                       value={judge}
                       onChange={(e) => handleJudgeChange(index, e.target.value)}
-                      className="flex-1 px-4 py-2 bg-white/10 border border-purple-500/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+                      className="input-neo flex-1 bg-white text-[#001858] placeholder-gray-500"
                       placeholder="Judge's wallet address"
                     />
                     {formData.judges.length > 1 && (
                       <button
                         type="button"
                         onClick={() => removeJudge(index)}
-                        className="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-200 rounded-lg transition-colors"
+                        className="btn-neo bg-[#f582ae] text-[#001858] text-sm"
                       >
-                        Remove
+                        REMOVE
                       </button>
                     )}
                   </div>
@@ -270,20 +270,20 @@ export default function CreateContest() {
                   <button
                     type="button"
                     onClick={addJudge}
-                    className="mt-2 text-purple-400 hover:text-purple-300 transition-colors"
+                    className="mt-2 text-[#001858] font-black hover:text-[#f582ae] transition-colors"
                   >
-                    + Add Judge
+                    + ADD JUDGE
                   </button>
                 )}
-                <p className="text-sm text-gray-400 mt-1">
+                <p className="text-sm text-[#001858] mt-1 font-bold">
                   Maximum 5 judges
                 </p>
               </div>
 
               {/* Approval Threshold */}
               <div>
-                <label className="block text-white font-semibold mb-2">
-                  Approval Threshold <span className="text-red-400">*</span>
+                <label className="block text-[#001858] font-black mb-2 uppercase text-sm">
+                  Approval Threshold <span className="text-[#f582ae]">*</span>
                 </label>
                 <input
                   type="number"
@@ -296,10 +296,10 @@ export default function CreateContest() {
                       approvalThreshold: parseInt(e.target.value),
                     })
                   }
-                  className="w-full px-4 py-2 bg-white/10 border border-purple-500/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+                  className="input-neo w-full bg-white text-[#001858] placeholder-gray-500"
                   required
                 />
-                <p className="text-sm text-gray-400 mt-1">
+                <p className="text-sm text-[#001858] mt-1 font-bold">
                   Number of judges needed to reach consensus
                 </p>
               </div>
@@ -308,13 +308,13 @@ export default function CreateContest() {
               <button
                 type="submit"
                 disabled={loading || !wallet.publicKey}
-                className="w-full py-3 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-colors"
+                className="btn-neo w-full bg-[#06ffa5] text-[#001858]"
               >
                 {loading
-                  ? 'Creating Contest...'
+                  ? 'CREATING CONTEST...'
                   : !wallet.publicKey
-                  ? 'Connect Wallet to Create'
-                  : 'Create Contest'}
+                  ? 'CONNECT WALLET TO CREATE'
+                  : 'CREATE CONTEST'}
               </button>
             </form>
           </div>
