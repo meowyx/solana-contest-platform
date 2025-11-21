@@ -13,12 +13,9 @@
 **Explorer:** [View on Solana Explorer](https://explorer.solana.com/address/9VcxDiDi8kbP6UnaVocXDcSPDwoJiDMxmECdqyALGuA4?cluster=devnet)
 **Frontend:** Next.js 16 with App Router.
 
-## 🎥 Demo Video
+## 🎥 Demo
 
-<video width="100%" controls>
-  <source src="capstone-demo.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+![Demo](demo.gif)
 
 ### Quick Access
 - **RPC Endpoint:** `https://api.devnet.solana.com`
