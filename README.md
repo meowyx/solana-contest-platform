@@ -11,7 +11,14 @@
 **Network:** Solana Devnet
 **Program ID:** `9VcxDiDi8kbP6UnaVocXDcSPDwoJiDMxmECdqyALGuA4`
 **Explorer:** [View on Solana Explorer](https://explorer.solana.com/address/9VcxDiDi8kbP6UnaVocXDcSPDwoJiDMxmECdqyALGuA4?cluster=devnet)
-**Frontend:** Next.js 16 with App Router (Neobrutalist Design)
+**Frontend:** Next.js 16 with App Router.
+
+## 🎥 Demo Video
+
+<video width="100%" controls>
+  <source src="capstone-demo.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
 
 ### Quick Access
 - **RPC Endpoint:** `https://api.devnet.solana.com`
